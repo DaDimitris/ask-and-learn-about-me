@@ -1,0 +1,219 @@
+<!--
+  Chatbot for Dimitris Dakos
+
+  This file implements a very simple, self‑contained chatbot that uses a
+  predefined knowledge base to answer questions about Dimitris Dakos.  The
+  knowledge base contains information extracted from Dimitris’s CV and
+  LinkedIn profile as of August 2025.  The bot will only answer
+  questions that match the provided patterns; for anything else it will
+  respond that the information is not available.  This avoids
+  hallucinations and ensures compliance with the user’s requirements.
+
+  To deploy this chatbot publicly you need to host this file on a web
+  server (for example GitHub Pages or your personal website) and then
+  link to it from your LinkedIn profile via the “Featured” section.  The
+  link can be given a custom title like “Ask and Learn about me” on
+  LinkedIn so visitors know what to expect.  See the accompanying
+  instructions in the final answer for details on how to do that.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ask and Learn about Dimitris Dakos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .chat-wrapper {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      width: 90%;
+      max-width: 600px;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-header {
+      padding: 16px;
+      font-size: 1.2em;
+      font-weight: bold;
+      background: #0073b1; /* LinkedIn blue for familiarity */
+      color: #ffffff;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+    .chat-log {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      background: #fdfdfd;
+    }
+    .message {
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    .message.bot {
+      color: #0a66c2; /* LinkedIn blue for bot messages */
+    }
+    .message.user {
+      color: #333333;
+      text-align: right;
+    }
+    .input-area {
+      display: flex;
+      padding: 8px 16px;
+      border-top: 1px solid #e0e0e0;
+      background: #fafafa;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+    .input-area input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    .input-area button {
+      margin-left: 8px;
+      padding: 10px 16px;
+      font-size: 1em;
+      background: #0a66c2;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .input-area button:disabled {
+      background: #9dbbd8;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-wrapper">
+    <div class="chat-header">Ask and Learn about Dimitris Dakos</div>
+    <div class="chat-log" id="chatLog"></div>
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Type your question here…">
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+  <script>
+    // Knowledge base with patterns and corresponding answers.
+    // Each entry has a regular expression that matches common ways
+    // someone might ask about a topic and a detailed answer based
+    // solely on the information provided by Dimitris’s CV and LinkedIn.
+    const knowledgeBase = [
+      {
+        pattern: /\bname\b|who are you|your name|introduce yourself/i,
+        answer: `My name is Dimitris Dakos. I am a supply chain executive with more than 20 years of experience in logistics and supply chain management, currently working as Director of Warehousing at OB Streem (Sep 2024–Jun 2025).`
+      },
+      {
+        pattern: /contact|phone|email|reach you/i,
+        answer: `You can contact me via email at dakosdimitris@gmail.com or by phone at +30 6979‑728846.`
+      },
+      {
+        pattern: /current role|current position|what do you do now|director of warehousing/i,
+        answer: `I serve as Director of Warehousing at OB Streem from September 2024 to June 2025. In this role I manage multiple warehousing sites covering about 239,000 sq.m. of property and 90,300 sq.m. of buildings with roughly 130 employees and a 16‑member management team. I prepare and execute annual OPEX and CAPEX budgets (9–12 million €), set up new facilities, oversee procurement of equipment and services, form the organizational structure for the sites and lead personnel through a transition to group culture. I also monitor and improve cost‑service performance, audit operational procedures, collaborate with cross‑functional teams and coach my team members, reporting to the VP of Contract Logistics. One recent achievement has been streamlining operational costs and improving gross margin and EBITDA by 19% year over year【888381147720656†screenshot】.`
+      },
+      {
+        pattern: /ob streem|warehousing sites|manage warehousing/i,
+        answer: `At OB Streem I manage several warehousing sites totalling roughly 239,000 sq.m. of property and 90,300 sq.m. of buildings. My responsibilities include budgeting, setting up new facilities, forming the management team, procurement of equipment and services, cost‑service optimisation, auditing procedures, cross‑functional collaboration and coaching team members【888381147720656†screenshot】.`
+      },
+      {
+        pattern: /head of distribution center|distribution center|AB Vassilopoulos|Ahold Delhaize/i,
+        answer: `Between December 2008 and August 2024 I was Head of Distribution Center at AB Vassilopoulos S.A. – part of the Ahold Delhaize group. I managed a distribution centre on a 112,000 sq.m. property with 33,000 sq.m. of buildings, overseeing about 180 employees and a 15‑member management team serving 133 stores. My duties included preparing OPEX and CAPEX budgets (7–10 million €), ensuring operational integrity and product safety, inventory management for over 10,000 SKUs, procurement of equipment and services, cost‑service optimisation, implementing new procedures, cross‑functional collaboration, KPI reporting, coaching/mentoring, maintenance oversight and health, safety & quality compliance. I reported to the Executive Committee and SVP Supply Chain. Key projects involved setting up a hub for exporting fruits and vegetables to the Central & South‑East region, leading or participating in strategic projects such as supply chain transformation and capacity expansion, redesigning operational layouts, improving picking sequencing, introducing procedures for frozen products and yard management, and automating workflows【888381147720656†screenshot】.`
+      },
+      {
+        pattern: /philkeram johnson|head of logistics|purchases|demand planning/i,
+        answer: `From July 2002 to December 2008 I worked at Philkeram Johnson S.A. (Norcros Group) as Head of Logistics. I managed purchases of finished products from Greece, Europe and India, oversaw a warehouse with 28 employees and a three‑member management team, performed demand planning and production scheduling, prepared annual warehousing and purchasing budgets (about 6 million €) and managed inventory. I negotiated with suppliers on costs, quality, lead times and service levels, collaborated with Marketing & Sales on new product introductions and discontinuations, and reported to the Commercial Director. Projects included establishing the logistics department, integrating purchasing, inventory management, production scheduling and warehousing functions, designing an order management system to reduce wait times and inventory carrying costs, and implementing a warehouse management system with RF technology【888381147720656†screenshot】.`
+      },
+      {
+        pattern: /sales professional|sales role|sales experience/i,
+        answer: `Between January 2001 and July 2002 I worked as a Sales Professional at Philkeram Johnson S.A., covering the regions of Thessaloniki, Central Macedonia, Chalkidiki, the Northern Aegean and the Dodecanese islands. During this period I generated sales revenue equal to about 10% of the company’s total sales, reporting to the Sales Director【888381147720656†screenshot】.`
+      },
+      {
+        pattern: /marketing trainee|trainee/i,
+        answer: `In July 1998–December 1998 I served as a Marketing Trainee at H & R Johnson Ceramic Tiles in Stoke‑on‑Trent, UK. I analysed product category sales and provided recommendations for rationalising part of the company’s product assortment【888381147720656†screenshot】.`
+      },
+      {
+        pattern: /education|studies|degree/i,
+        answer: `My formal education includes an MSc in Logistics Management from the University of Sheffield (CITY College, affiliated institution) completed in 2003–2005 with distinction, where I wrote a dissertation proposing an integrated logistics department model; an MSc in Marketing Management from Aston University completed in 1997–1998; and a BA in Business Studies from the University of Sheffield (1994–1997). I also hold certifications including MIT’s Manufacturing Systems I & II (2020–2021), PMP Project Management Professional (2020), negotiation skills (2018) and various courses such as Harvard’s CS50 and MIT’s Introduction to Computer Science and Programming using Python【888381147720656†screenshot】.`
+      },
+      {
+        pattern: /certifications|courses|training/i,
+        answer: `My professional development includes certifications and courses such as Manufacturing Systems II (optimisation techniques, simulation modelling, multiple part‑type lines) from MIT (2021); Manufacturing Systems I (stochastic processes, Markov chains, queuing systems, manufacturing line capacity/efficiency/productivity) from MIT (2020); PMP Project Management Professional (2020); negotiation skills (2018); Introduction to Computer Science and Programming using Python by MIT (2017); and Harvard’s CS50 course (2016)【888381147720656†screenshot】.`
+      },
+      {
+        pattern: /extra curricular|volunteer|publications|board member/i,
+        answer: `I served on the board of directors of the Hellenic Society of Logistics (Thessaloniki chapter) from 2003–2015, delivered lectures to postgraduate students at City College in Thessaloniki and published papers at the “Supply Chain Management and Information Systems” international conference in 2006 and in the International Journal of Enterprise Network Management in 2007. I am proficient in English【888381147720656†screenshot】.`
+      },
+      {
+        pattern: /skills|expertise|strengths/i,
+        answer: `My core skills include project management, S&OP implementation, demand planning, procurement, warehousing and logistics management, supply chain strategy development and team leadership. I emphasise people, processes and systems to achieve sustainable results and have experience leading cross‑functional teams and implementing large‑scale logistics improvements【419901832562333†screenshot】.`
+      },
+      {
+        pattern: /pmp|project management professional|project management certification/i,
+        answer: `I hold the Project Management Professional (PMP)® certification from the Project Management Institute.  I announced my verified digital credential on LinkedIn in 2020, inviting others to view my achievement.  The PMP qualification recognises my project management expertise and complements my supply‑chain leadership experience.`
+      },
+      {
+        pattern: /posts|what do you post|social media|linkedin activity|content/i,
+        answer: `My LinkedIn activity spans a variety of themes connected to supply‑chain management, professional growth and broader social topics.  Recent highlights include congratulating the Thessaloniki Innovation Zone on winning the “Startup Ecosystem Star 2024” award and thanking Prof. Panayiotis Ketikidis for his leadership, sharing a World Economic Forum article about flexible parental leave and announcing my new role at OB Streem.  I also wrote a farewell message upon leaving AB Vassilopoulos after 16 years and shared a story about the supermarket’s core value “the good is for all of us”.  
+
+In earlier posts I commented on the importance of continuous improvement (aiming for the top spot as a means to get better), the need to prioritise when solving problems, and how determination and other character skills underpin success.  I posted about AB Vassilopoulos running a 5 km marathon and promoted a Warehouse Shift Coordinator position, welcomed a new team member, and discussed how major life decisions require building relevant experiences.  I endorsed the World Economic Forum’s taxonomy for “Education 4.0” as a way to prepare future skills and emphasised that education offers the best long‑term returns.  I recommended the book **The Limits to Growth** and expressed interest in topics such as agile methods beyond software development, data science roles, diversity and inclusion (referencing Apple’s “Think Different” campaign) and the power of human imagination shown by the Apollo 11 Moon landing.  I also highlighted that employers value soft skills—especially communication.  
+
+Around 2021–2022 I encouraged readers to try activities outside their routine (#wow!), noted that project management conferences were hybrid (combining agile and waterfall methods as well as on‑site and remote participation), and argued that hiring for attitude is more important than hiring solely for skills.  I explored emerging technologies by explaining what non‑fungible tokens (NFTs) are and how they relate to blockchain and smart contracts, and summarised an article advocating “no‑code” artificial intelligence tools to democratise AI.  I shared posts on container shipping profits and the challenges of supply‑chain disruption, as well as a C‑suite AI toolkit.  Another post reflected on how the COVID‑19 pandemic stress‑tested supply chains and included my certificate in Supply Chain Analytics Foundations.  I advocated learning Python to support AI and machine‑learning initiatives in operations and shared certificates from MIT’s Manufacturing Systems courses covering optimisation, simulation, queueing theory and inventory policies.  I also attended a Reuters IMPACT forum on climate action and completed LinkedIn Learning courses on influence and persuasion, Scrum basics, lean foundations and agile project management.  
+
+Older posts mention completing MIT’s Manufacturing Systems rounds I and II, which covered stochastic processes, Markov chains, queuing systems, inventory replenishment policies and other advanced manufacturing topics.  I invited connections to join the Reuters IMPACT virtual forum and stressed the importance of agility and adaptability.  In 2020 I shared my digital badge for the PMP® certification, reposted Nike’s “Play inside, play for the world” message during the pandemic to encourage unity (#playfortheworld), and commented on a Harvard Business Review article about how the best managers identify and develop talent—highlighting that potential must be cultivated and materialised.  These posts collectively showcase my commitment to lifelong learning, innovation, leadership and social responsibility.`
+      }
+    ];
+
+    function addMessage(sender, text) {
+      const log = document.getElementById('chatLog');
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('message', sender);
+      msgDiv.textContent = text;
+      log.appendChild(msgDiv);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function getAnswer(question) {
+      for (const item of knowledgeBase) {
+        if (item.pattern.test(question)) {
+          return item.answer;
+        }
+      }
+      return "I'm sorry, I don't have that information.";
+    }
+
+    document.getElementById('sendBtn').addEventListener('click', () => {
+      const input = document.getElementById('userInput');
+      const question = input.value.trim();
+      if (!question) return;
+      addMessage('user', question);
+      const answer = getAnswer(question);
+      addMessage('bot', answer);
+      input.value = '';
+    });
+
+    // Allow pressing Enter to submit
+    document.getElementById('userInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('sendBtn').click();
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
