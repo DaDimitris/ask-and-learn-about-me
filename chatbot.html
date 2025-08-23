@@ -63,23 +63,47 @@
       display: flex;
       flex-direction: column;
     }
-    .message {
+    .message-row {
+      /* wrap an avatar and the bubble on a single row */
+      display: flex;
+      align-items: flex-start;
       margin-bottom: 14px;
+    }
+    .message-row.user {
+      justify-content: flex-end;
+    }
+    .message-row.bot {
+      justify-content: flex-start;
+    }
+    .avatar {
+      /* Slightly larger avatars for a friendlier feel */
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 8px;
+      flex-shrink: 0;
+    }
+    .avatar.user {
+      margin-left: 8px;
+      margin-right: 0;
+    }
+    .bubble {
       line-height: 1.5;
-      max-width: 85%;
-      display: inline-block;
+      max-width: 75%;
       padding: 10px 14px;
       border-radius: 12px;
+      display: inline-block;
+      word-wrap: break-word;
     }
-    .message.bot {
+    .bubble.bot {
       color: #ffffff;
       background: #0a66c2;
-      align-self: flex-start;
+      border-bottom-left-radius: 0;
     }
-    .message.user {
+    .bubble.user {
       color: #333333;
       background: #e6f0fa;
-      align-self: flex-end;
+      border-bottom-right-radius: 0;
     }
     .input-area {
       display: flex;
@@ -126,6 +150,11 @@
     </div>
   </div>
   <script>
+    // Base64 encoded avatar images for the bot and the user.  These
+    // small 64×64px icons are embedded directly so the chatbot has a
+    // friendly face without any external dependencies.
+    const botAvatar = 'data:image/png;base64,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';
+    const userAvatar = 'data:image/png;base64,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';
     // Knowledge base with patterns and corresponding answers.
     // Each entry has a regular expression that matches common ways
     // someone might ask about a topic and a detailed answer based
@@ -133,51 +162,51 @@
     const knowledgeBase = [
       {
         pattern: /\bname\b|who are you|your name|introduce yourself/i,
-        answer: `My name is Dimitris Dakos. I am a supply chain executive with more than 20 years of experience in logistics and supply chain management, currently working as Director of Warehousing at OB Streem (Sep 2024–Jun 2025).`
+        answer: `Hi! I’m Dimitris Dakos, a seasoned supply‑chain professional with over two decades of experience.  Right now I’m the Director of Warehousing at OB Streem, where I oversee warehousing operations and lead a talented team.`
       },
       {
         pattern: /contact|phone|email|reach you/i,
-        answer: `You can contact me via email at dakosdimitris@gmail.com or by phone at +30 6979‑728846.`
+        answer: `Feel free to drop me a line at dakosdimitris@gmail.com or call/text me on +30 6979 728846.`
       },
       {
         pattern: /current role|current position|what do you do now|director of warehousing/i,
-        answer: `I serve as Director of Warehousing at OB Streem from September 2024 to June 2025. In this role I manage multiple warehousing sites covering about 239,000 sq.m. of property and 90,300 sq.m. of buildings with roughly 130 employees and a 16‑member management team. I prepare and execute annual OPEX and CAPEX budgets (9–12 million €), set up new facilities, oversee procurement of equipment and services, form the organizational structure for the sites and lead personnel through a transition to group culture. I also monitor and improve cost‑service performance, audit operational procedures, collaborate with cross‑functional teams and coach my team members, reporting to the VP of Contract Logistics. One recent achievement has been streamlining operational costs and improving gross margin and EBITDA by 19% year over year【888381147720656†screenshot】.`
+        answer: `Since September 2024 I’ve been the Director of Warehousing at OB Streem.  I manage several large sites (about 239 k m² of property and 90 k m² of buildings) with a team of roughly 130 people.  My days are spent budgeting, setting up new facilities, buying equipment, shaping the organisation and coaching my team.  I report to the VP of Contract Logistics, and we’ve already improved cost–service performance and raised margins by about 19%.`
       },
       {
         pattern: /ob streem|warehousing sites|manage warehousing/i,
-        answer: `At OB Streem I manage several warehousing sites totalling roughly 239,000 sq.m. of property and 90,300 sq.m. of buildings. My responsibilities include budgeting, setting up new facilities, forming the management team, procurement of equipment and services, cost‑service optimisation, auditing procedures, cross‑functional collaboration and coaching team members【888381147720656†screenshot】.`
+        answer: `At OB Streem I look after a network of warehousing sites—think 239 k m² of property and 90 k m² of buildings.  I handle budgets, fit‑outs, hiring, buying equipment, improving cost–service ratios and making sure our processes run smoothly while mentoring the team.`
       },
       {
         pattern: /head of distribution center|distribution center|AB Vassilopoulos|Ahold Delhaize/i,
-        answer: `Between December 2008 and August 2024 I was Head of Distribution Center at AB Vassilopoulos S.A. – part of the Ahold Delhaize group. I managed a distribution centre on a 112,000 sq.m. property with 33,000 sq.m. of buildings, overseeing about 180 employees and a 15‑member management team serving 133 stores. My duties included preparing OPEX and CAPEX budgets (7–10 million €), ensuring operational integrity and product safety, inventory management for over 10,000 SKUs, procurement of equipment and services, cost‑service optimisation, implementing new procedures, cross‑functional collaboration, KPI reporting, coaching/mentoring, maintenance oversight and health, safety & quality compliance. I reported to the Executive Committee and SVP Supply Chain. Key projects involved setting up a hub for exporting fruits and vegetables to the Central & South‑East region, leading or participating in strategic projects such as supply chain transformation and capacity expansion, redesigning operational layouts, improving picking sequencing, introducing procedures for frozen products and yard management, and automating workflows【888381147720656†screenshot】.`
+        answer: `From 2008 to 2024 I led the distribution centre at AB Vassilopoulos (Ahold Delhaize) in Thessaloniki.  We operated a 33 k m² facility on a 112 k m² site, serving 133 stores with around 180 staff.  I owned budgets (7–10 M €), kept products safe and fresh, managed inventory for more than 10 k SKUs and ran a host of projects—from setting up an export hub for fresh produce and expanding capacity to redesigning layouts, improving picking sequences and automating workflows.  I reported directly to the executive committee.`
       },
       {
         pattern: /philkeram johnson|head of logistics|purchases|demand planning/i,
-        answer: `From July 2002 to December 2008 I worked at Philkeram Johnson S.A. (Norcros Group) as Head of Logistics. I managed purchases of finished products from Greece, Europe and India, oversaw a warehouse with 28 employees and a three‑member management team, performed demand planning and production scheduling, prepared annual warehousing and purchasing budgets (about 6 million €) and managed inventory. I negotiated with suppliers on costs, quality, lead times and service levels, collaborated with Marketing & Sales on new product introductions and discontinuations, and reported to the Commercial Director. Projects included establishing the logistics department, integrating purchasing, inventory management, production scheduling and warehousing functions, designing an order management system to reduce wait times and inventory carrying costs, and implementing a warehouse management system with RF technology【888381147720656†screenshot】.`
+        answer: `Earlier in my career I built the logistics department at Philkeram Johnson (Norcros Group).  I juggled purchasing, demand planning, production scheduling and warehousing, overseeing a team of about 30 people and a 6 M € annual budget.  We integrated purchasing with inventory management, introduced an RF‑enabled warehouse management system and created an order‑management system that cut wait times and reduced inventory carrying costs.`
       },
       {
         pattern: /sales professional|sales role|sales experience/i,
-        answer: `Between January 2001 and July 2002 I worked as a Sales Professional at Philkeram Johnson S.A., covering the regions of Thessaloniki, Central Macedonia, Chalkidiki, the Northern Aegean and the Dodecanese islands. During this period I generated sales revenue equal to about 10% of the company’s total sales, reporting to the Sales Director【888381147720656†screenshot】.`
+        answer: `Before moving into logistics I spent a year and a half in sales at Philkeram Johnson.  Covering northern Greece and the islands, I generated around 10 % of the company’s total revenue and reported to the sales director.`
       },
       {
         pattern: /marketing trainee|trainee/i,
-        answer: `In July 1998–December 1998 I served as a Marketing Trainee at H & R Johnson Ceramic Tiles in Stoke‑on‑Trent, UK. I analysed product category sales and provided recommendations for rationalising part of the company’s product assortment【888381147720656†screenshot】.`
+        answer: `My first professional experience was as a marketing trainee at H & R Johnson (UK) in 1998.  I analysed product category sales and made recommendations on how to streamline the product range.`
       },
       {
         pattern: /education|studies|degree/i,
-        answer: `My formal education includes an MSc in Logistics Management from the University of Sheffield (CITY College, affiliated institution) completed in 2003–2005 with distinction, where I wrote a dissertation proposing an integrated logistics department model; an MSc in Marketing Management from Aston University completed in 1997–1998; and a BA in Business Studies from the University of Sheffield (1994–1997). I also hold certifications including MIT’s Manufacturing Systems I & II (2020–2021), PMP Project Management Professional (2020), negotiation skills (2018) and various courses such as Harvard’s CS50 and MIT’s Introduction to Computer Science and Programming using Python【888381147720656†screenshot】.`
+        answer: `I earned an MSc in Logistics Management from the University of Sheffield (City College, 2005) with distinction, an MSc in Marketing Management from Aston University (1998) and a BA in Business Studies from Sheffield (1997).  Over the years I’ve also completed numerous courses and certifications, including MIT’s Manufacturing Systems I & II, the PMP® credential, negotiation skills and computer science courses from MIT and Harvard.`
       },
       {
         pattern: /certifications|courses|training/i,
-        answer: `My professional development includes certifications and courses such as Manufacturing Systems II (optimisation techniques, simulation modelling, multiple part‑type lines) from MIT (2021); Manufacturing Systems I (stochastic processes, Markov chains, queuing systems, manufacturing line capacity/efficiency/productivity) from MIT (2020); PMP Project Management Professional (2020); negotiation skills (2018); Introduction to Computer Science and Programming using Python by MIT (2017); and Harvard’s CS50 course (2016)【888381147720656†screenshot】.`
+        answer: `I’m committed to lifelong learning.  Highlights include MIT’s Manufacturing Systems courses (covering optimisation, simulation, queueing theory and inventory policies), the PMP® certification, a negotiation skills course and computer science courses like MIT’s Python programming and Harvard’s CS50.`
       },
       {
         pattern: /extra curricular|volunteer|publications|board member/i,
-        answer: `I served on the board of directors of the Hellenic Society of Logistics (Thessaloniki chapter) from 2003–2015, delivered lectures to postgraduate students at City College in Thessaloniki and published papers at the “Supply Chain Management and Information Systems” international conference in 2006 and in the International Journal of Enterprise Network Management in 2007. I am proficient in English【888381147720656†screenshot】.`
+        answer: `Beyond my day job I spent a decade on the board of the Hellenic Society of Logistics, gave guest lectures at City College in Thessaloniki and co‑authored research papers on supply chain management.  I speak fluent English.`
       },
       {
         pattern: /skills|expertise|strengths/i,
-        answer: `My core skills include project management, S&OP implementation, demand planning, procurement, warehousing and logistics management, supply chain strategy development and team leadership. I emphasise people, processes and systems to achieve sustainable results and have experience leading cross‑functional teams and implementing large‑scale logistics improvements【419901832562333†screenshot】.`
+        answer: `My strengths span project management, S&OP, demand planning, procurement, warehousing, logistics and supply‑chain strategy.  I’m a people‑centric leader who blends processes and systems to deliver sustainable results and enjoys guiding cross‑functional teams through large‑scale improvements.`
       },
       {
         pattern: /pmp|project management professional|project management certification/i,
@@ -185,26 +214,20 @@
       },
       {
         pattern: /posts|what do you post|social media|linkedin activity|content/i,
-        answer: `My LinkedIn activity spans a variety of themes connected to supply‑chain management, professional growth and broader social topics.  Recent highlights include congratulating the Thessaloniki Innovation Zone on winning the “Startup Ecosystem Star 2024” award and thanking Prof. Panayiotis Ketikidis for his leadership, sharing a World Economic Forum article about flexible parental leave and announcing my new role at OB Streem.  I also wrote a farewell message upon leaving AB Vassilopoulos after 16 years and shared a story about the supermarket’s core value “the good is for all of us”.  
-
-In earlier posts I commented on the importance of continuous improvement (aiming for the top spot as a means to get better), the need to prioritise when solving problems, and how determination and other character skills underpin success.  I posted about AB Vassilopoulos running a 5 km marathon and promoted a Warehouse Shift Coordinator position, welcomed a new team member, and discussed how major life decisions require building relevant experiences.  I endorsed the World Economic Forum’s taxonomy for “Education 4.0” as a way to prepare future skills and emphasised that education offers the best long‑term returns.  I recommended the book **The Limits to Growth** and expressed interest in topics such as agile methods beyond software development, data science roles, diversity and inclusion (referencing Apple’s “Think Different” campaign) and the power of human imagination shown by the Apollo 11 Moon landing.  I also highlighted that employers value soft skills—especially communication.  
-
-Around 2021–2022 I encouraged readers to try activities outside their routine (#wow!), noted that project management conferences were hybrid (combining agile and waterfall methods as well as on‑site and remote participation), and argued that hiring for attitude is more important than hiring solely for skills.  I explored emerging technologies by explaining what non‑fungible tokens (NFTs) are and how they relate to blockchain and smart contracts, and summarised an article advocating “no‑code” artificial intelligence tools to democratise AI.  I shared posts on container shipping profits and the challenges of supply‑chain disruption, as well as a C‑suite AI toolkit.  Another post reflected on how the COVID‑19 pandemic stress‑tested supply chains and included my certificate in Supply Chain Analytics Foundations.  I advocated learning Python to support AI and machine‑learning initiatives in operations and shared certificates from MIT’s Manufacturing Systems courses covering optimisation, simulation, queueing theory and inventory policies.  I also attended a Reuters IMPACT forum on climate action and completed LinkedIn Learning courses on influence and persuasion, Scrum basics, lean foundations and agile project management.  
-
-Older posts mention completing MIT’s Manufacturing Systems rounds I and II, which covered stochastic processes, Markov chains, queuing systems, inventory replenishment policies and other advanced manufacturing topics.  I invited connections to join the Reuters IMPACT virtual forum and stressed the importance of agility and adaptability.  In 2020 I shared my digital badge for the PMP® certification, reposted Nike’s “Play inside, play for the world” message during the pandemic to encourage unity (#playfortheworld), and commented on a Harvard Business Review article about how the best managers identify and develop talent—highlighting that potential must be cultivated and materialised.  These posts collectively showcase my commitment to lifelong learning, innovation, leadership and social responsibility.`
+        answer: `On LinkedIn I share a mix of supply‑chain insights, professional milestones and broader reflections.  Recent posts celebrate the Thessaloniki Innovation Zone’s success, discuss flexible parental leave, announce my move to OB Streem and reflect on leaving AB Vassilopoulos after 16 years.  I also enjoy highlighting continuous improvement, education, emerging tech (like AI, NFTs and no‑code tools), diversity & inclusion and sustainability.  Over the years I’ve shared team wins, job opportunities, certificates from MIT courses, PMP® achievements and encouraging messages during the pandemic.  If you’re curious about supply‑chain trends, agile methods or lifelong learning you’ll likely enjoy my feed.`
       }
       ,
       {
         pattern: /projects|projects implemented|significant projects|key projects|warehouse automation|automation|set up new facilities/i,
-        answer: `Throughout my career I have led and participated in numerous strategic projects.  At **OB Streem** I have been responsible for setting up new warehousing facilities, forming organisational structures, procuring equipment and services and improving cost–service performance.  At **AB Vassilopoulos** I oversaw a major **export hub** for fruits and vegetables serving Central and South‑East European markets and took part in **supply‑chain transformation** and **capacity‑expansion** projects.  I redesigned operational layouts, improved picking sequencing, introduced new procedures for frozen products and yard management and led the **automation of workflows**, including integration with information systems【888381147720656†screenshot】.  Earlier, at **Philkeram Johnson**, I established the logistics department from scratch, integrating purchasing, inventory management, production scheduling and warehousing.  I designed an order management system that reduced wait times and inventory carrying costs and implemented a warehouse management system using RF technology【888381147720656†screenshot】.`
+        answer: `I’ve been fortunate to lead some impactful projects.  At OB Streem I’m currently setting up new facilities, building the organisational structure, procuring equipment and driving cost–service improvements.  At AB Vassilopoulos I launched an export hub for fruits and vegetables, took part in supply‑chain transformation and capacity‑expansion programmes and revamped layouts, sequencing and yard management with an eye on automation.  Earlier at Philkeram Johnson I built the logistics department from the ground up, introduced RF‑enabled warehouse management and created an order‑management system that reduced wait times and inventory costs.`
       },
       {
         pattern: /achievements|main achievements|successes|notable achievements|highlights/i,
-        answer: `Some of my notable achievements include **reducing operational costs** and boosting gross margin and EBITDA by **19 % year over year** at OB Streem through cost–service optimisation and process improvements【888381147720656†screenshot】.  At AB Vassilopoulos I managed a 33,000 sq.m. distribution centre serving 133 stores and successfully executed budgets of 7–10 million €, while maintaining operational integrity and product safety and leading multi‑disciplinary teams on strategic transformation projects.  I also pioneered an export hub for fruits and vegetables and introduced automated workflows and yard management procedures.  At Philkeram Johnson I created the logistics department, integrated purchasing and production functions, implemented a warehouse management system with RF technology and designed an order management system that reduced customer wait times and lowered inventory costs【888381147720656†screenshot】.`
+        answer: `Some achievements I’m proud of include driving cost–service improvements at OB Streem that lifted margins by about 19 %, opening new facilities and building a strong team.  During my long tenure at AB Vassilopoulos I ran a 33 k m² distribution centre that supplied over 130 stores, stewarded budgets of 7–10 million € and led projects that expanded capacity, introduced automation and set up an export hub for fresh produce.  Earlier at Philkeram Johnson I founded the logistics department, linked purchasing with production, rolled out a radio‑frequency warehouse management system and designed an order‑management process that cut wait times and lowered inventory costs.`
       },
       {
         pattern: /interests|main interests|focus areas|what topics do you care about/i,
-        answer: `I have a wide range of professional interests, including **supply‑chain strategy**, **logistics optimisation**, **project management**, **agile methodologies**, **continuous improvement** and **leadership development**.  Beyond core operations I explore **emerging technologies** such as **artificial intelligence**, **machine learning**, **data science roles** and **blockchain/NFTs**, and I support the democratisation of AI through no‑code tools.  I am passionate about **education and lifelong learning**—I believe education offers the best long‑term returns for individuals and society—and I regularly complete courses and share insights on this topic.  I also advocate for **diversity and inclusion**, celebrate innovation in ecosystems like the Thessaloniki Innovation Zone and engage with **sustainability and climate action** initiatives.  Overall my posts and activities reflect a commitment to innovation, continuous improvement, leadership and social responsibility.`
+        answer: `My professional interests cover supply‑chain strategy, logistics optimisation, project management, agile practices, continuous improvement and leadership development.  I’m also fascinated by emerging technologies such as artificial intelligence, machine learning, data science and blockchain/NFTs, and I support making AI accessible through no‑code tools.  Education and lifelong learning are close to my heart—I believe they deliver lasting benefits for individuals and society—so I regularly take courses and share what I learn.  I advocate for diversity and inclusion, celebrate innovation hubs like the Thessaloniki Innovation Zone and engage in sustainability and climate‑action initiatives.  Overall, my posts and activities demonstrate a commitment to innovation, continuous improvement, leadership and social responsibility.`
       },
       {
         pattern: /can (?:.* )?lead projects|lead projects|lead automation|capable of leading|manage projects/i,
@@ -214,11 +237,60 @@ Older posts mention completing MIT’s Manufacturing Systems rounds I and II, 
 
     function addMessage(sender, text) {
       const log = document.getElementById('chatLog');
-      const msgDiv = document.createElement('div');
-      msgDiv.classList.add('message', sender);
-      msgDiv.textContent = text;
-      log.appendChild(msgDiv);
+      // create a row that holds avatar and bubble
+      const row = document.createElement('div');
+      row.classList.add('message-row', sender);
+      // avatar image
+      const avatarImg = document.createElement('img');
+      avatarImg.src = sender === 'bot' ? botAvatar : userAvatar;
+      avatarImg.classList.add('avatar', sender);
+      // bubble for the message text
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble', sender);
+      bubble.textContent = text;
+      // order: bot avatar then bubble; user bubble then avatar
+      if (sender === 'bot') {
+        row.appendChild(avatarImg);
+        row.appendChild(bubble);
+      } else {
+        row.appendChild(bubble);
+        row.appendChild(avatarImg);
+      }
+      log.appendChild(row);
+      // auto scroll to bottom
       log.scrollTop = log.scrollHeight;
+    }
+
+    // Send a potentially long bot answer in multiple message bubbles.
+    function sendBotMessages(answer) {
+      // Remove citation references like 【...】 from the answer
+      let clean = answer.replace(/【[^】]*】/g, '').trim();
+      // Split the answer into paragraphs based on blank lines
+      const paragraphs = clean.split(/\n+/);
+      // Shorten the maximum length of each bubble so answers feel
+      // conversational and digestible.  Around 250 characters per
+      // segment tends to read more like a chat instead of a long paragraph.
+      const maxLen = 250;
+      paragraphs.forEach((para) => {
+        let text = para.trim();
+        if (!text) return;
+        // Break long paragraphs into segments at sentence boundaries or spaces
+        while (text.length > maxLen) {
+          let cut = text.lastIndexOf('. ', maxLen);
+          if (cut === -1) {
+            cut = text.lastIndexOf(' ', maxLen);
+          }
+          if (cut === -1) {
+            cut = maxLen;
+          }
+          const segment = text.slice(0, cut + 1).trim();
+          addMessage('bot', segment);
+          text = text.slice(cut + 1).trim();
+        }
+        if (text) {
+          addMessage('bot', text);
+        }
+      });
     }
 
     // Improved retrieval: gather all matching answers and combine them.
@@ -246,7 +318,7 @@ Older posts mention completing MIT’s Manufacturing Systems rounds I and II, 
       if (!question) return;
       addMessage('user', question);
       const answer = getAnswer(question);
-      addMessage('bot', answer);
+      sendBotMessages(answer);
       input.value = '';
       // disable send button until next input
       document.getElementById('sendBtn').disabled = true;
