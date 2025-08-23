@@ -248,7 +248,18 @@
         answer: `Absolutely—my track record shows I can deliver results.  At OB Streem I've improved cost–service performance and margins by around 19 %, opened new facilities and mentored a large team.  At AB Vassilopoulos I ran a major distribution centre with multimillion‑euro budgets and led projects that expanded capacity and introduced automation.`
       },
       {
-        pattern: /good leader|good manager|is he a good leader|good leadership|leadership qualities|leadership skills|leadership capabilities|people leader|can he manage people|people management/i,
+        /*
+          Leadership and management questions.  This pattern covers
+          multiple ways of asking whether Dimitris is a capable,
+          competent or effective leader or manager.  Variations such
+          as "good leader", "good manager", "capable leader", "competent
+          manager", "effective leader", "strong leader", as well as
+          questions phrased as "is he a good leader", "is he a capable
+          leader", "can he manage people" or "people management"
+          will all match this expression.  Keeping it broad helps the
+          bot infer leadership queries even if phrased differently.
+        */
+        pattern: /\b(?:good|capable|competent|effective|strong)\s+(?:leader|manager)\b|is he a\s+(?:good|capable|competent|effective|strong)\s+leader|is he a\s+(?:good|capable|competent|effective|strong)\s+manager|good leadership|leadership qualities|leadership skills|leadership capabilities|people leader|can he manage people|people management/i,
         answer: `I’ve been trusted to lead cross‑functional teams throughout my career.  I focus on people, processes and systems, and I enjoy guiding colleagues through large‑scale improvements.  Serving on the board of the Hellenic Society of Logistics and mentoring teams at OB Streem and AB Vassilopoulos reflects my commitment to collaborative, people‑centric leadership.`
       },
       {
@@ -273,6 +284,12 @@ Below is a chart summarising some of these improvements in percentages:<br>
       {
         pattern: /background|career path|professional journey|work history|how (?:did|has) he started|started his career/i,
         answer: `My career began in the late 1990s as a marketing trainee at H & R Johnson in the UK.  I then spent about a year and a half in sales at Philkeram Johnson, covering northern Greece and the islands.  I went on to build the logistics department at Philkeram Johnson, introducing integrated purchasing, scheduling and warehouse management.  From 2008 to 2024 I headed the distribution centre at AB Vassilopoulos, running a 33 k m² facility with a large team and multimillion‑euro budgets.  Today I serve as Director of Warehousing at OB Streem, overseeing multiple sites and leading cost‑service improvements.`
+      }
+      ,
+      {
+        // Process improvement and re‑engineering queries
+        pattern: /improve processes|process improvement|process optimisation|process optimization|re[- ]?design procedures|redesign processes|re[- ]?design workflows|improve workflows|optimise procedures|optimize procedures/i,
+        answer: `Yes—I’ve consistently redesigned and improved processes across my roles.  At OB Streem I’m driving cost–service improvements and laying out new facilities.  At AB Vassilopoulos I redesigned warehouse layouts, revamped picking sequences and yard management, introduced automation and set up an export hub for fresh produce.  Earlier at Philkeram Johnson I integrated purchasing with production scheduling, rolled out a radio‑frequency warehouse management system and designed an order‑management process that cut wait times and inventory costs.  These projects show my ability to analyse existing workflows, identify bottlenecks and implement more efficient processes.`
       }
     ];
 
