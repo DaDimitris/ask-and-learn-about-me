@@ -252,6 +252,16 @@
         answer: `I’ve been trusted to lead cross‑functional teams throughout my career.  I focus on people, processes and systems, and I enjoy guiding colleagues through large‑scale improvements.  Serving on the board of the Hellenic Society of Logistics and mentoring teams at OB Streem and AB Vassilopoulos reflects my commitment to collaborative, people‑centric leadership.`
       },
       {
+        // Numeric details about improvements and achievements
+        pattern: /numbers.*improvements|improvements.*numbers|numbers.*achievements|achievements.*numbers|provide numbers|quantify|numbers in improvements|numeric details/i,
+        answer: `Here are some quantified improvements from my career:<br>
+– At OB Streem, operational costs improved by 19 % year over year.<br>
+– At AB Vassilopoulos, we increased picking productivity by 5 %, reduced errors and shrinkage by 7 %, cut wait time at the yard/dock by 10 % and boosted reception capacity by 15 %. A workflow‑automation project saved 10 % in workhours, and an initiative for frozen products delivered an annual benefit of €60 k. We also analysed material‑flow automation that saves 2 full‑time equivalents each year and grew the distribution centre’s capability from serving 34 stores to 133 stores.<br>
+– At Philkeram Johnson, a stock‑management plan generated €2.2 million in cash flow over three years. An order‑management system increased service levels by 9 % and lowered inventory carrying costs by 17 %. We also cut wait time for backorder information by 50 % and designed an inventory management system that supported a fivefold increase in SKUs.<br><br>
+Below is a chart summarising some of these improvements in percentages:<br>
+<img src="improvement_chart.png" alt="Improvement chart" style="width:100%; max-width:500px; margin-top:8px;">`
+      },
+      {
         pattern: /good fit|fit for .*sani|fit for .*ikos/i,
         answer: `I can’t evaluate my fit for a specific company like Sani/Ikos, but my background spans warehousing, distribution, S&OP, demand planning and project management.  If an organisation values supply‑chain optimisation and people‑centric leadership, my experience could be relevant.  Ultimately the best fit depends on the company’s specific needs and culture.`
       },
@@ -278,7 +288,8 @@
       // bubble for the message text
       const bubble = document.createElement('div');
       bubble.classList.add('bubble', sender);
-      bubble.textContent = text;
+      // Use innerHTML so that messages can include markup (e.g., bold text or images).
+      bubble.innerHTML = text;
       // order: bot avatar then bubble; user bubble then avatar
       if (sender === 'bot') {
         row.appendChild(avatarImg);
