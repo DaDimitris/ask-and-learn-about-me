@@ -24,79 +24,95 @@
   <title>Ask and Learn about Dimitris Dakos</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      /* Use a soft neutral background and center the chat container */
+      font-family: "Helvetica Neue", Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #f5f5f5;
+      background: #fafafa;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
     }
     .chat-wrapper {
+      /* Main container with rounded corners and subtle shadow */
       background: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      width: 90%;
-      max-width: 600px;
-      height: 80vh;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      width: 95%;
+      max-width: 680px;
+      height: 85vh;
       display: flex;
       flex-direction: column;
     }
     .chat-header {
-      padding: 16px;
-      font-size: 1.2em;
-      font-weight: bold;
-      background: #0073b1; /* LinkedIn blue for familiarity */
+      padding: 20px;
+      font-size: 1.4em;
+      font-weight: 600;
       color: #ffffff;
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
+      /* Use a modern gradient similar to popular chat apps */
+      background: linear-gradient(90deg, #0a66c2 0%, #0073b1 100%);
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
     }
     .chat-log {
       flex: 1;
-      padding: 16px;
+      padding: 20px;
       overflow-y: auto;
       background: #fdfdfd;
+      display: flex;
+      flex-direction: column;
     }
     .message {
-      margin-bottom: 12px;
-      line-height: 1.4;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      max-width: 85%;
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 12px;
     }
     .message.bot {
-      color: #0a66c2; /* LinkedIn blue for bot messages */
+      color: #ffffff;
+      background: #0a66c2;
+      align-self: flex-start;
     }
     .message.user {
       color: #333333;
-      text-align: right;
+      background: #e6f0fa;
+      align-self: flex-end;
     }
     .input-area {
       display: flex;
-      padding: 8px 16px;
-      border-top: 1px solid #e0e0e0;
-      background: #fafafa;
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
+      padding: 12px 20px;
+      border-top: 1px solid #e5e5e5;
+      background: #ffffff;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
     }
     .input-area input {
       flex: 1;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #cccccc;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 1em;
     }
     .input-area button {
-      margin-left: 8px;
-      padding: 10px 16px;
+      margin-left: 10px;
+      padding: 12px 20px;
       font-size: 1em;
       background: #0a66c2;
       color: #ffffff;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
+      transition: background 0.2s ease;
     }
     .input-area button:disabled {
       background: #9dbbd8;
       cursor: not-allowed;
+    }
+    .input-area button:not(:disabled):hover {
+      background: #094e96;
     }
   </style>
 </head>
@@ -177,6 +193,23 @@ Around 2021–2022 I encouraged readers to try activities outside their routine 
 
 Older posts mention completing MIT’s Manufacturing Systems rounds I and II, which covered stochastic processes, Markov chains, queuing systems, inventory replenishment policies and other advanced manufacturing topics.  I invited connections to join the Reuters IMPACT virtual forum and stressed the importance of agility and adaptability.  In 2020 I shared my digital badge for the PMP® certification, reposted Nike’s “Play inside, play for the world” message during the pandemic to encourage unity (#playfortheworld), and commented on a Harvard Business Review article about how the best managers identify and develop talent—highlighting that potential must be cultivated and materialised.  These posts collectively showcase my commitment to lifelong learning, innovation, leadership and social responsibility.`
       }
+      ,
+      {
+        pattern: /projects|projects implemented|significant projects|key projects|warehouse automation|automation|set up new facilities/i,
+        answer: `Throughout my career I have led and participated in numerous strategic projects.  At **OB Streem** I have been responsible for setting up new warehousing facilities, forming organisational structures, procuring equipment and services and improving cost–service performance.  At **AB Vassilopoulos** I oversaw a major **export hub** for fruits and vegetables serving Central and South‑East European markets and took part in **supply‑chain transformation** and **capacity‑expansion** projects.  I redesigned operational layouts, improved picking sequencing, introduced new procedures for frozen products and yard management and led the **automation of workflows**, including integration with information systems【888381147720656†screenshot】.  Earlier, at **Philkeram Johnson**, I established the logistics department from scratch, integrating purchasing, inventory management, production scheduling and warehousing.  I designed an order management system that reduced wait times and inventory carrying costs and implemented a warehouse management system using RF technology【888381147720656†screenshot】.`
+      },
+      {
+        pattern: /achievements|main achievements|successes|notable achievements|highlights/i,
+        answer: `Some of my notable achievements include **reducing operational costs** and boosting gross margin and EBITDA by **19 % year over year** at OB Streem through cost–service optimisation and process improvements【888381147720656†screenshot】.  At AB Vassilopoulos I managed a 33,000 sq.m. distribution centre serving 133 stores and successfully executed budgets of 7–10 million €, while maintaining operational integrity and product safety and leading multi‑disciplinary teams on strategic transformation projects.  I also pioneered an export hub for fruits and vegetables and introduced automated workflows and yard management procedures.  At Philkeram Johnson I created the logistics department, integrated purchasing and production functions, implemented a warehouse management system with RF technology and designed an order management system that reduced customer wait times and lowered inventory costs【888381147720656†screenshot】.`
+      },
+      {
+        pattern: /interests|main interests|focus areas|what topics do you care about/i,
+        answer: `I have a wide range of professional interests, including **supply‑chain strategy**, **logistics optimisation**, **project management**, **agile methodologies**, **continuous improvement** and **leadership development**.  Beyond core operations I explore **emerging technologies** such as **artificial intelligence**, **machine learning**, **data science roles** and **blockchain/NFTs**, and I support the democratisation of AI through no‑code tools.  I am passionate about **education and lifelong learning**—I believe education offers the best long‑term returns for individuals and society—and I regularly complete courses and share insights on this topic.  I also advocate for **diversity and inclusion**, celebrate innovation in ecosystems like the Thessaloniki Innovation Zone and engage with **sustainability and climate action** initiatives.  Overall my posts and activities reflect a commitment to innovation, continuous improvement, leadership and social responsibility.`
+      },
+      {
+        pattern: /can (?:.* )?lead projects|lead projects|lead automation|capable of leading|manage projects/i,
+        answer: `Yes.  My roles have consistently involved leading complex projects across warehousing, logistics and supply‑chain functions.  At OB Streem and AB Vassilopoulos I managed teams that set up new facilities, redesigned distribution centres and introduced automation and yard management processes.  I have also implemented warehouse management systems with RF technology and led cross‑functional teams through supply‑chain transformation projects.  This experience, combined with my PMP® certification and advanced training in manufacturing systems, demonstrates my capability to lead projects, including those involving warehouse automation and process improvement.`
+      }
     ];
 
     function addMessage(sender, text) {
@@ -188,13 +221,23 @@ Older posts mention completing MIT’s Manufacturing Systems rounds I and II, 
       log.scrollTop = log.scrollHeight;
     }
 
+    // Improved retrieval: gather all matching answers and combine them.
     function getAnswer(question) {
+      const answers = [];
       for (const item of knowledgeBase) {
-        if (item.pattern.test(question)) {
-          return item.answer;
+        try {
+          if (item.pattern.test(question)) {
+            answers.push(item.answer);
+          }
+        } catch (err) {
+          // ignore pattern errors
         }
       }
-      return "I'm sorry, I don't have that information.";
+      if (answers.length > 0) {
+        // Combine multiple answers separated by a blank line
+        return answers.join('\n\n');
+      }
+      return "I'm sorry, I don't have that information in my knowledge base.";
     }
 
     document.getElementById('sendBtn').addEventListener('click', () => {
@@ -205,6 +248,8 @@ Older posts mention completing MIT’s Manufacturing Systems rounds I and II, 
       const answer = getAnswer(question);
       addMessage('bot', answer);
       input.value = '';
+      // disable send button until next input
+      document.getElementById('sendBtn').disabled = true;
     });
 
     // Allow pressing Enter to submit
@@ -212,6 +257,18 @@ Older posts mention completing MIT’s Manufacturing Systems rounds I and II, 
       if (e.key === 'Enter') {
         document.getElementById('sendBtn').click();
         e.preventDefault();
+      }
+    });
+
+    // Enable/disable send button based on input content
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    sendBtn.disabled = true;
+    userInput.addEventListener('input', () => {
+      if (userInput.value.trim().length > 0) {
+        sendBtn.disabled = false;
+      } else {
+        sendBtn.disabled = true;
       }
     });
   </script>
