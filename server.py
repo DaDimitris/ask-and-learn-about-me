@@ -26,9 +26,22 @@ network access and a valid API key.
 import os
 from flask import Flask, request, jsonify
 import openai
+try:
+    # Try to import CORS for Cross‑Origin Resource Sharing.  This is optional
+    # but enables the API to be consumed from a browser hosted on a different
+    # domain (e.g. GitHub Pages).  If flask_cors isn't installed the server
+    # will still work for same‑origin requests.
+    from flask_cors import CORS  # type: ignore
+except ImportError:
+    CORS = None  # type: ignore  # Fall back gracefully if package is missing
 
 
 app = Flask(__name__)
+# Enable Cross‑Origin Resource Sharing (CORS) so that the API can be called
+# from a frontend hosted on a different domain.  If flask_cors is not
+# available, this call will have no effect.
+if CORS:
+    CORS(app)
 
 
 def get_knowledge_base() -> str:
