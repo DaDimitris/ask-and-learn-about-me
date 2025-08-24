@@ -1,0 +1,119 @@
+<!--
+  Chatbot client that communicates with a backend API to answer
+  questions about Dimitris Dakos.  It sends the user's question to
+  `/chat` (expected to be hosted at the same origin) and displays the
+  response.  This version is designed to work with the simple Flask
+  server in server.py.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ask and Learn about Dimitris Dakos (API)</title>
+  <style>
+    body { font-family: "Helvetica Neue", Arial, sans-serif; margin: 0; padding: 0; background: #fafafa; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .chat-wrapper { background: #ffffff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); width: 95%; max-width: 680px; height: 85vh; display: flex; flex-direction: column; }
+    .chat-header { padding: 20px; font-size: 1.4em; font-weight: 600; color: #ffffff; background: linear-gradient(90deg, #0a66c2 0%, #0073b1 100%); border-top-left-radius: 12px; border-top-right-radius: 12px; }
+    .chat-log { flex: 1; padding: 20px; overflow-y: auto; background: #fdfdfd; display: flex; flex-direction: column; }
+    .message-row { display: flex; align-items: flex-start; margin-bottom: 14px; }
+    .message-row.user { justify-content: flex-end; }
+    .message-row.bot { justify-content: flex-start; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
+    .avatar.user { margin-left: 8px; margin-right: 0; }
+    .bubble { line-height: 1.5; max-width: 75%; padding: 10px 14px; border-radius: 12px; display: inline-block; word-wrap: break-word; }
+    .bubble.bot { color: #ffffff; background: #0a66c2; border-bottom-left-radius: 0; }
+    .bubble.user { color: #333333; background: #e6f0fa; border-bottom-right-radius: 0; }
+    .input-area { display: flex; padding: 12px 20px; border-top: 1px solid #e5e5e5; background: #ffffff; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
+    .input-area input { flex: 1; padding: 12px; border: 1px solid #cccccc; border-radius: 6px; font-size: 1em; }
+    .input-area button { margin-left: 10px; padding: 12px 20px; font-size: 1em; background: #0a66c2; color: #ffffff; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s ease; }
+    .input-area button:disabled { background: #9dbbd8; cursor: not-allowed; }
+    .input-area button:not(:disabled):hover { background: #094e96; }
+  </style>
+</head>
+<body>
+  <div class="chat-wrapper">
+    <div class="chat-header">Ask and Learn about Dimitris Dakos</div>
+    <div class="chat-log" id="chatLog"></div>
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Type your question here…">
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+  <script>
+    // Same avatars as the pattern‑based chatbot
+    const botAvatar = '${botAvatar}';
+    const userAvatar = '${userAvatar}';
+
+    function addMessage(sender, text) {
+      const log = document.getElementById('chatLog');
+      const row = document.createElement('div');
+      row.classList.add('message-row', sender);
+      const avatarImg = document.createElement('img');
+      avatarImg.src = sender === 'bot' ? botAvatar : userAvatar;
+      avatarImg.classList.add('avatar', sender);
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble', sender);
+      bubble.innerHTML = text;
+      if (sender === 'bot') {
+        row.appendChild(avatarImg);
+        row.appendChild(bubble);
+      } else {
+        row.appendChild(bubble);
+        row.appendChild(avatarImg);
+      }
+      log.appendChild(row);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    // URL of the backend API.  Replace this with the full URL of your
+    // deployed Flask (or other) server.  For example,
+    // 'https://your-app-name.onrender.com/chat'
+    // Update the API URL to point to the deployed backend on Render.
+    // Use your Render service URL followed by /chat endpoint.
+    const API_URL = 'https://ask-and-learn-about-me.onrender.com/chat';
+
+    async function sendQuestion(question) {
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question }),
+        });
+        const data = await response.json();
+        if (data.answer) {
+          // Split answer into manageable bubbles
+          const segments = data.answer.split(/\n\n+/);
+          segments.forEach(seg => addMessage('bot', seg.trim()));
+        } else {
+          addMessage('bot', 'Sorry, I had trouble fetching an answer.');
+        }
+      } catch (err) {
+        addMessage('bot', 'An error occurred while contacting the server.');
+      }
+    }
+
+    document.getElementById('sendBtn').addEventListener('click', () => {
+      const input = document.getElementById('userInput');
+      const question = input.value.trim();
+      if (!question) return;
+      addMessage('user', question);
+      sendQuestion(question);
+      input.value = '';
+      document.getElementById('sendBtn').disabled = true;
+    });
+    document.getElementById('userInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('sendBtn').click();
+        e.preventDefault();
+      }
+    });
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    sendBtn.disabled = true;
+    userInput.addEventListener('input', () => {
+      sendBtn.disabled = !userInput.value.trim();
+    });
+  </script>
+</body>
+</html>
